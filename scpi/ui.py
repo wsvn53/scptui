@@ -1046,6 +1046,12 @@ class FileBrowser(App):
         item = self.all_items[list_view.index]
         logging.debug(f"Selected item: name='{item.file_name}', is_directory={item.is_directory}")
 
+        # Construct full path
+        if self.is_remote:
+            full_path = f"{self.current_path.rstrip('/')}/{item.file_name}"
+        else:
+            full_path = str(Path(self.current_path) / item.file_name)
+
         if not item.is_directory:
             # If it's a file, ask to copy it immediately
             logging.debug(f"Item '{item.file_name}' is a file")
@@ -1140,6 +1146,7 @@ class FileBrowser(App):
                     self.query_one("#file-list").focus()
 
             # Build confirmation message
+            size_str = item._format_size(item.file_size)
             message = f"Copy '{item.file_name}' ({size_str}) now?\n"
             if item.is_symlink:
                 message += f"\n🔗 This is a symbolic link to:\n   {item.symlink_target}\n"

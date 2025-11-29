@@ -10,6 +10,7 @@ from typing import List, Optional, Tuple
 import paramiko
 from paramiko import SSHClient, AutoAddPolicy
 from rich.console import Console
+from rich.prompt import Prompt
 
 console = Console()
 
@@ -48,25 +49,48 @@ class SCPClient:
         Returns:
             True if connection successful, False otherwise
         """
-        try:
+        # Helper to perform the actual connection
+        def try_connect(password_to_use):
             self.client = SSHClient()
             self.client.set_missing_host_key_policy(AutoAddPolicy())
-
-            console.print(f"🔌 Connecting to {self.username}@{self.host}:{self.port}")
-
+            
             self.client.connect(
                 hostname=self.host,
                 port=self.port,
                 username=self.username,
-                password=self.password,
+                password=password_to_use,
                 key_filename=self.key_filename,
-                timeout=10
+                timeout=10,
+                # If look_for_keys is True (default), it will try keys in ~/.ssh first.
+                # We want this, but we need to catch if it fails.
             )
+            return self.client.open_sftp()
 
-            self.sftp = self.client.open_sftp()
+        console.print(f"🔌 Connecting to {self.username}@{self.host}:{self.port}")
+
+        try:
+            self.sftp = try_connect(self.password)
             console.print("✅ [green]Connected successfully[/green]")
             return True
 
+        except paramiko.AuthenticationException:
+            console.print(f"⚠️  [yellow]Authentication failed (public key rejected or bad password).[/yellow]")
+            
+            # If we haven't prompted yet (or even if we have and it failed), 
+            # prompt for password now.
+            try:
+                new_password = Prompt.ask("🔑 Please enter password", password=True)
+                self.password = new_password
+                
+                console.print(f"🔄 Retrying with provided password...")
+                self.sftp = try_connect(self.password)
+                console.print("✅ [green]Connected successfully[/green]")
+                return True
+                
+            except Exception as e_retry:
+                console.print(f"❌ [red]Connection failed after password input: {e_retry}[/red]")
+                return False
+                
         except Exception as e:
             console.print(f"❌ [red]Connection failed: {e}[/red]")
             return False
