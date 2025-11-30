@@ -548,7 +548,8 @@ class FileBrowser(App):
         is_remote: bool = False,
         copy_callback: Optional[Callable[[List[tuple]], bool]] = None,
         target_path: str = "",
-        select_destination_mode: bool = False
+        select_destination_mode: bool = False,
+        get_dir_size_func: Optional[Callable[[str], int]] = None
     ):
         """Initialize file browser.
 
@@ -560,6 +561,7 @@ class FileBrowser(App):
             copy_callback: Optional callback to copy files, receives [(path, is_dir), ...]
             target_path: Target destination path to display
             select_destination_mode: If True, button says "Copy Here" and callback receives current dir
+            get_dir_size_func: Optional function to calculate directory size (remote or local)
         """
         super().__init__()
         self.browser_title = title
@@ -569,6 +571,7 @@ class FileBrowser(App):
         self.copy_callback = copy_callback
         self.target_path = target_path
         self.select_destination_mode = select_destination_mode
+        self.get_dir_size_func = get_dir_size_func
         self.selected_files: List[str] = []
         self.all_items: List[FileListItem] = []
         self._last_click_time = 0
@@ -837,9 +840,8 @@ class FileBrowser(App):
         try:
             if self.is_remote:
                 # For remote directories, use SFTP to calculate size
-                # This requires accessing the SSH client's SFTP connection
-                # For now, return 0 as we don't have direct access to SFTP here
-                # The size calculation would need to be done in the copy callback
+                if self.get_dir_size_func:
+                    return self.get_dir_size_func(dir_path)
                 return 0
             else:
                 # For local directories, walk through all files

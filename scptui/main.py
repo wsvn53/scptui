@@ -477,7 +477,8 @@ def main():
                     is_remote=True,
                     copy_callback=copy_files,
                     target_path=f"💻 {target_base}" if not browsing_target else f"📥 Source: {config.source}",
-                    select_destination_mode=browsing_target
+                    select_destination_mode=browsing_target,
+                    get_dir_size_func=scp_client.get_remote_dir_size
                 )
                 browser.run()
 

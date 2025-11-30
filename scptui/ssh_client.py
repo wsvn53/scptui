@@ -196,6 +196,45 @@ class SCPClient:
         except:
             return remote_path
 
+    def get_remote_dir_size(self, remote_path: str) -> int:
+        """Calculate size of remote directory in bytes.
+
+        Args:
+            remote_path: Remote directory path
+
+        Returns:
+            Size in bytes
+        """
+        if not self.client:
+            return 0
+
+        try:
+            # Escape single quotes in path for shell safety
+            safe_path = remote_path.replace("'", "'\\''")
+            
+            # Try du -sb first (GNU du - apparent size in bytes)
+            # -s: summarize, -b: bytes
+            command = f"du -sb '{safe_path}' 2>/dev/null | cut -f1"
+            stdin, stdout, stderr = self.client.exec_command(command)
+            size_str = stdout.read().decode().strip()
+            
+            if size_str and size_str.isdigit():
+                return int(size_str)
+
+            # Fallback to du -sk (POSIX - 1024-byte blocks)
+            # -k: kilobytes
+            command = f"du -sk '{safe_path}' 2>/dev/null | cut -f1"
+            stdin, stdout, stderr = self.client.exec_command(command)
+            size_str = stdout.read().decode().strip()
+            
+            if size_str and size_str.isdigit():
+                return int(size_str) * 1024
+
+        except Exception as e:
+            console.print(f"⚠️  [yellow]Error getting directory size: {e}[/yellow]")
+
+        return 0
+
     def list_remote_files(self, remote_path: str = ".") -> List[Tuple[str, bool, int, bool, str, bool]]:
         """List files in remote directory.
 
