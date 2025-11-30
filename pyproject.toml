@@ -3,7 +3,7 @@ requires = ["setuptools>=64.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "scpi"
+name = "scptui"
 version = "0.1.0"
 description = "SCP Interactive tool with terminal UI for file transfers"
 readme = "README.md"
@@ -40,14 +40,14 @@ dev = [
 ]
 
 [project.scripts]
-scpi = "scpi.main:main"
+scptui = "scptui.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "."}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["scpi*"]
+include = ["scptui*"]
 namespaces = false
 
 [tool.black]

@@ -1,4 +1,4 @@
-"""Main entry point for SCPI."""
+"""Main entry point for SCPTUI."""
 
 import argparse
 import re
@@ -73,7 +73,7 @@ def parse_arguments() -> TransferConfig:
     """
     parser = argparse.ArgumentParser(
         description="📁 SCP Interactive tool with terminal UI",
-        usage="scpi [-P port] [-i identity_file] [-r] [-v] [-R] source target"
+        usage="scptui [-P port] [-i identity_file] [-r] [-v] [-R] source target"
     )
 
     parser.add_argument(
@@ -339,8 +339,8 @@ def perform_copy(
 def main():
     """Main entry point."""
     from pathlib import Path
-    from scpi.ssh_client import SCPClient
-    from scpi.ui import FileBrowser
+    from scptui.ssh_client import SCPClient
+    from scptui.ui import FileBrowser
 
     try:
         config = parse_arguments()
@@ -360,7 +360,7 @@ def main():
         # Disable logging or set to critical only to avoid output
         logging.basicConfig(level=logging.CRITICAL)
 
-    console.print("🔐 [bold green]SCPI - SCP Interactive Tool[/bold green]")
+    console.print("🔐 [bold green]SCPTUI - SCP Interactive Tool[/bold green]")
 
     mode = "⬆️  Upload" if config.is_upload else "⬇️  Download"
     console.print(f"{mode}: [cyan]{config.source}[/cyan] → [cyan]{config.target}[/cyan]")

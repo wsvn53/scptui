@@ -1,8 +1,8 @@
-# SCPI - SCP Interactive Tool
+# SCPTUI - SCP Interactive Tool
 
 📁 An interactive SCP (Secure Copy Protocol) tool with a beautiful terminal UI for easy file transfers between local and remote systems.
 
-![SCPI Demo](screenshots/scpi-demo.png)
+![SCPTUI Demo](screenshots/scptui-demo.png)
 
 ## Features
 
@@ -17,7 +17,7 @@
 
 ```bash
 # Clone the repository
-cd scpi
+cd scptui
 
 # Install dependencies
 pip install -e .
@@ -28,10 +28,10 @@ pip install -e ".[dev]"
 
 ## Usage
 
-SCPI uses the same syntax as the traditional SCP command:
+SCPTUI uses the same syntax as the traditional SCP command:
 
 ```bash
-scpi [-P port] [-i identity_file] [-r] [-v] [-R] source target
+scptui [-P port] [-i identity_file] [-r] [-v] [-R] source target
 ```
 
 **Remote path format:** `user@host[:port]:path`
@@ -42,26 +42,26 @@ scpi [-P port] [-i identity_file] [-r] [-v] [-R] source target
 
 ```bash
 # Download a file
-scpi user@example.com:/remote/file.txt /local/path/
+scptui user@example.com:/remote/file.txt /local/path/
 
 # Download a directory (recursive)
-scpi -r user@example.com:/remote/dir/ /local/dir/
+scptui -r user@example.com:/remote/dir/ /local/dir/
 ```
 
 ### Upload files to remote server
 
 ```bash
 # Upload a file
-scpi /local/file.txt user@example.com:/remote/path/
+scptui /local/file.txt user@example.com:/remote/path/
 
 # Upload a directory (recursive)
-scpi -r /local/dir/ user@example.com:/remote/path/
+scptui -r /local/dir/ user@example.com:/remote/path/
 ```
 
 ### Command options
 
 ```bash
-scpi --help
+scptui --help
 
 positional arguments:
   source                Source file/directory (local path or user@host:path)
@@ -83,13 +83,13 @@ options:
 ### Using SSH key authentication
 
 ```bash
-scpi -i ~/.ssh/id_rsa user@example.com:/remote/file.txt /local/
+scptui -i ~/.ssh/id_rsa user@example.com:/remote/file.txt /local/
 ```
 
 ### Using password authentication
 
 ```bash
-scpi -p mypassword user@example.com:/remote/file.txt /local/
+scptui -p mypassword user@example.com:/remote/file.txt /local/
 ```
 
 ### Custom SSH port
@@ -98,12 +98,12 @@ You can specify the port in two ways:
 
 **Using -P flag:**
 ```bash
-scpi -P 2222 user@example.com:/remote/file.txt /local/
+scptui -P 2222 user@example.com:/remote/file.txt /local/
 ```
 
 **Inline in the path (user@host:port:path):**
 ```bash
-scpi user@example.com:2222:/remote/file.txt /local/
+scptui user@example.com:2222:/remote/file.txt /local/
 ```
 
 **Note:** Port in path takes precedence over `-P` flag.
@@ -111,13 +111,13 @@ scpi user@example.com:2222:/remote/file.txt /local/
 ### Verbose mode with recursive copy
 
 ```bash
-scpi -v -r -i ~/.ssh/id_rsa /local/dir/ user@example.com:/remote/backup/
+scptui -v -r -i ~/.ssh/id_rsa /local/dir/ user@example.com:/remote/backup/
 ```
 
 ### Combined example with custom port
 
 ```bash
-scpi -i ~/.ssh/id_rsa -r /local/backup/ user@example.com:1234:/remote/backup/
+scptui -i ~/.ssh/id_rsa -r /local/backup/ user@example.com:1234:/remote/backup/
 ```
 
 ### Interactive selection side
@@ -130,10 +130,10 @@ Use `-R` to switch to browsing the **local** directory:
 
 ```bash
 # Upload: Browse local files interactively (select what to upload)
-scpi -R /local/path/ user@example.com:/remote/path/
+scptui -R /local/path/ user@example.com:/remote/path/
 
 # Download: Browse local destination interactively (select where to save)
-scpi -R user@example.com:/remote/path/ /local/path/
+scptui -R user@example.com:/remote/path/ /local/path/
 ```
 
 ## Development
@@ -143,10 +143,10 @@ scpi -R user@example.com:/remote/path/ /local/path/
 pip install -e ".[dev]"
 
 # Format code with black
-black scpi/
+black scptui/
 
 # Lint with ruff
-ruff check scpi/
+ruff check scptui/
 
 # Run tests
 pytest
