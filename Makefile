@@ -49,9 +49,9 @@ format:
 publish: build
 	@echo "🚀 Publishing to PyPI..."
 	@if ! command -v twine >/dev/null 2>&1; then echo "❌ Twine is not installed. Run 'pip install twine'"; exit 1; fi
-	twine upload dist/*
+	twine upload --verbose dist/*
 
 test-publish: build
 	@echo "🧪 Publishing to TestPyPI..."
 	@if ! command -v twine >/dev/null 2>&1; then echo "❌ Twine is not installed. Run 'pip install twine'"; exit 1; fi
-	twine upload --repository testpypi dist/*
+	twine upload --repository testpypi --verbose dist/*
